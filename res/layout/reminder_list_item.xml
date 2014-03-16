@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" 
+    android:padding="10sp">
+
+	<RelativeLayout 
+	    android:layout_width="fill_parent"
+	    android:layout_height="wrap_content"
+	    android:id="@+id/reminder_relative1">
+
+	   	<Switch
+	   	    android:id="@+id/reminder_switch"
+	   	    android:layout_width="wrap_content"
+	   	    android:layout_height="wrap_content"
+	   	    android:layout_alignParentRight="true"
+	   	    android:layout_alignParentTop="true"
+	   	    android:gravity="right" />
+
+	   	<TextView
+	   	    android:id="@+id/reminder_textclock"
+	   	    android:layout_width="wrap_content"
+	   	    android:layout_height="wrap_content"
+	   	    android:layout_alignParentLeft="true"
+	   	    android:layout_centerVertical="true"
+	   	    android:gravity="left" 
+	   	    android:textSize="40sp"
+	   	    android:typeface="sans"
+	   	    />
+
+	</RelativeLayout>
+	<View 
+	    android:layout_width="match_parent"
+	    android:layout_height="10sp"/>
+	<RelativeLayout
+	    android:id="@+id/reminder_relative2"
+	    android:layout_width="match_parent"
+	    android:layout_height="wrap_content" >
+
+		<TextView
+		    android:id="@+id/reminder_label"
+		    android:layout_width="wrap_content"
+		    android:layout_height="wrap_content"
+		    android:layout_alignParentLeft="true"
+		    android:layout_centerVertical="true"
+		    android:gravity="left"
+		    android:hint="@string/default_label" >
+
+		</TextView>
+
+		<ImageButton
+		    android:id="@+id/reminder_delete"
+		    android:layout_width="wrap_content"
+		    android:layout_height="wrap_content"
+		    android:layout_alignParentRight="true"
+		    android:layout_centerVertical="true"
+		    android:src="@drawable/ic_delete"/>
+
+	</RelativeLayout>
+	<View 
+	    android:layout_width="match_parent"
+	    android:layout_height="10sp"/>
+	
+	<LinearLayout
+        android:id="@+id/repeat_days"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginEnd="10dp"
+        android:layout_gravity="top"
+        android:orientation="horizontal">
+		</LinearLayout>
+
+</LinearLayout>

@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">Reminder</string>
+    <string name="action_settings">Settings</string>
+    <string name="hello_world">Hello world!</string>
+	
+        <!-- Repeat options that appear under an alarm on main Alarm Clock
+         screen to identify repetition schedule: special case for when
+         the alarm is set to repeat every day -->
+    <string name="every_day">Every day</string>
+
+    <!-- Repeat options that appear under an alarm on main Alarm Clock
+         screen to identify repetition schedule: special case for when
+         the alarm is set to never repeat -->
+    <string name="never">Never</string>
+
+    <!-- Repeat options that appear under an alarm on main Alarm Clock
+         screen to identify repetition schedule: concatenate days with
+         this character, i.e. "Mon, Tue, Wed" -->
+    <string name="day_concat">", "</string>
+    
+    <!-- This is the default text label for new reminders-->
+    <string name="default_label">Reminder</string>
+    
+    <string-array name="shortDaysOfWeek">
+        <item >Sun</item>
+        <item >Mon</item>
+        <item >Tue</item>
+        <item >Wed</item>
+        <item >Thu</item>
+        <item >Fri</item>
+        <item >Sat</item>
+    </string-array>
+    
+    <string name="picker_cancel">Cancel</string>
+    
+    <string name="picker_confirm">OK</string>
+    
+</resources>
