@@ -9,6 +9,7 @@ import android.animation.Animator.AnimatorListener;
 import android.animation.AnimatorInflater;
 import android.app.TimePickerDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.database.DataSetObserver;
 import android.media.RingtoneManager;
 import android.os.Bundle;
@@ -207,6 +208,9 @@ public class ReminderFragment<mSelectedAlarm> extends Fragment implements
 			@Override
 			public void onClick(View v) {
 				alarmPreferences.saveSharedPreferences(mAdapter.getAlarmList());
+				Intent i = new Intent();
+				i.setAction(Constants.ALARM_UPDATE_BROADCAST);
+				getActivity().sendBroadcast(i);
 				
 			}
 		});

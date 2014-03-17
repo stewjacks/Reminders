@@ -31,6 +31,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.text.format.DateFormat;
+import android.text.format.Time;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -39,6 +40,7 @@ import android.widget.Toast;
  */
 public class AlarmUtils {
     public static final String FRAG_TAG_TIME_PICKER = "time_dialog";
+	private static final String TAG = "AlarmUtils";
     
     public static String getFormattedTime(Context context, Calendar time) {
         String skeleton = DateFormat.is24HourFormat(context) ? "EHm" : "Ehma";
@@ -79,13 +81,29 @@ public class AlarmUtils {
        
     	Calendar alarmCalendar = Calendar.getInstance();
     	int addDays = alarm.daysOfWeek.calculateDaysToNextAlarm(alarmCalendar);
-    	if (addDays>0){
-    		alarmCalendar.add(Calendar.DAY_OF_WEEK, addDays);
-    	}
+		Log.d(TAG, "days to add: "+addDays);
+		if(addDays>0){ //should always be
+			alarmCalendar.add(Calendar.DATE, addDays);
+		}
     	
     	alarmCalendar.set(Calendar.HOUR_OF_DAY, alarm.hour);
     	alarmCalendar.set(Calendar.MINUTE, alarm.minutes);
+    	alarmCalendar.set(Calendar.SECOND, 0);
     	alarmCalendar.set(Calendar.MILLISECOND, 0);
+    	
+
+    	//don't schedule alarms in the past that were supposed to fire today
+    	while(alarmCalendar.before(Calendar.getInstance())){
+    		if(!alarm.daysOfWeek.isRepeating()){
+    			break;
+    		}else{
+	    		alarmCalendar.add(Calendar.DATE, 1);
+	    		addDays = alarm.daysOfWeek.calculateDaysToNextAlarm(alarmCalendar);
+	    		if(addDays>0){
+	    			alarmCalendar.add(Calendar.DATE, addDays);
+	    		}
+    		}
+    	}
     	
         return alarmCalendar;
     }
@@ -96,18 +114,74 @@ public class AlarmUtils {
      * @return
      */
     
-	public static Calendar getNextAlarm(ArrayList<Alarm> reminders){
+	public static AlarmCalendarObject getNextAlarm(ArrayList<Alarm> reminders){
 		Calendar bestCalendar = null;
-		for (Alarm alarm : reminders){
+		AlarmCalendarObject alarmCalendarObject = new AlarmCalendarObject(null, null);
+		
+		for (int i = 0; i<reminders.size(); i++){
+			Alarm alarm = reminders.get(i);
     		if(alarm.enabled){
     			Calendar c = getAlarmTime(alarm);
     			if (bestCalendar == null || 
     					c.getTimeInMillis() < bestCalendar.getTimeInMillis()){ 
     				bestCalendar = c;
+    				alarmCalendarObject.setCalendar(bestCalendar);
+    				alarmCalendarObject.setAlarm(alarm);
+    				alarmCalendarObject.setEnabled(alarm.daysOfWeek.isRepeating());
+    				alarmCalendarObject.setIndex(i);
     			}
     		}	
     	}
-		return bestCalendar;
-	}
 
+		return alarmCalendarObject;
+	}
+	
+	public static class AlarmCalendarObject{
+		private Calendar calendar;
+		private boolean enabled;
+		private Alarm alarm;
+		private int index;
+
+		public AlarmCalendarObject(Calendar calendar, Alarm alarm){
+			this.calendar = calendar;
+			this.alarm = alarm;
+			this.enabled=true;
+			this.index = -1;
+
+		}
+		
+		public AlarmCalendarObject(Calendar calendar, Alarm alarm, boolean enabled, int index){
+			this.calendar = calendar;
+			this.alarm = alarm;
+			this.enabled=enabled;
+			this.index = index;
+		}
+		
+		public Calendar getCalendar(){
+			return calendar;
+		}
+		public void setCalendar(Calendar calendar){
+			this.calendar = calendar;
+		}
+		public Alarm getAlarm(){
+			return alarm;
+		}
+		public void setAlarm(Alarm alarm){
+			this.alarm = alarm;
+		}
+		public boolean getEnabled(){
+			return enabled;
+		}
+		public void setEnabled(boolean enabled){
+			this.enabled=enabled;
+		}
+		public int getIndex(){
+			return index;
+		}
+		public void setIndex(int index){
+			this.index = index;
+		}
+	}
 }
+
+

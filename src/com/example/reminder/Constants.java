@@ -9,4 +9,7 @@ public class Constants {
 	public static final String ALARM_FILENAME = "alarms";
 
 	public static final int ALARM_INTENT_CODE = 3487;
+
+	public static final String ALARM_TITLE_INTENT = "AlarmTitle";
+	public static final String ALARM_UPDATE_BROADCAST = "com.example.reminders.UPDATE_ALARMS";
 }

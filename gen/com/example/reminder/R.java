@@ -80,11 +80,12 @@ public final class R {
         public static final int ic_delete_pressed=0x7f020009;
         public static final int ic_launcher=0x7f02000a;
         public static final int ic_noalarms=0x7f02000b;
-        public static final int notification_template_icon_bg=0x7f02000f;
-        public static final int notification_template_icon_low_bg=0x7f020010;
-        public static final int toggle_underline=0x7f02000c;
-        public static final int toggle_underline_activated=0x7f02000d;
-        public static final int toggle_underline_normal=0x7f02000e;
+        public static final int notification_template_icon_bg=0x7f020010;
+        public static final int notification_template_icon_low_bg=0x7f020011;
+        public static final int splash_cyclist=0x7f02000c;
+        public static final int toggle_underline=0x7f02000d;
+        public static final int toggle_underline_activated=0x7f02000e;
+        public static final int toggle_underline_normal=0x7f02000f;
     }
     public static final class id {
         public static final int action_settings=0x7f0d0013;
@@ -171,8 +172,9 @@ public final class R {
          the alarm is set to never repeat 
          */
         public static final int never=0x7f090004;
-        public static final int picker_cancel=0x7f090007;
-        public static final int picker_confirm=0x7f090008;
+        public static final int notification_message=0x7f090007;
+        public static final int picker_cancel=0x7f090008;
+        public static final int picker_confirm=0x7f090009;
     }
     public static final class style {
         /** 

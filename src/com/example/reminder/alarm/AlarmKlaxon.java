@@ -125,7 +125,7 @@ public class AlarmKlaxon {
 
 //        if (instance.mVibrate) {
             Vibrator vibrator = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);
-            vibrator.vibrate(sVibratePattern, 0);
+            vibrator.vibrate(sVibratePattern, -1);
 //        }
 
         sStarted = true;
@@ -137,7 +137,7 @@ public class AlarmKlaxon {
         // do not play alarms if stream volume is 0 (typically because ringer mode is silent).
         if (audioManager.getStreamVolume(AudioManager.STREAM_ALARM) != 0) {
             player.setAudioStreamType(AudioManager.STREAM_ALARM);
-            player.setLooping(true);
+            player.setLooping(false);
             player.prepare();
             audioManager.requestAudioFocus(null,
                     AudioManager.STREAM_ALARM, AudioManager.AUDIOFOCUS_GAIN_TRANSIENT);
