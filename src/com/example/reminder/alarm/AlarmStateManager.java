@@ -116,318 +116,300 @@
 //        prefs.edit().putInt(ALARM_GLOBAL_ID_EXTRA, globalId).commit();
 //    }
 //
-//    /**
-//     * Find and notify system what the next alarm that will fire. This is used
-//     * to update text in the system and widgets.
-//     *
-//     * @param context application context
-//     */
-//    public static void updateNextAlarm(Context context) {
-//        AlarmInstance nextAlarm = null;
-//        ContentResolver cr = context.getContentResolver();
-//        String activeAlarmQuery = AlarmInstance.ALARM_STATE + "<" + AlarmInstance.FIRED_STATE;
-//        for (AlarmInstance instance : AlarmInstance.getInstances(cr, activeAlarmQuery)) {
-//            if (nextAlarm == null || instance.getAlarmTime().before(nextAlarm.getAlarmTime())) {
-//                nextAlarm = instance;
-//            }
-//        }
-//        AlarmNotifications.broadcastNextAlarm(context, nextAlarm);
-//    }
-//
-//    /**
-//     * Used by dismissed and missed states, to update parent alarm. This will either
-//     * disable, delete or reschedule parent alarm.
-//     *
-//     * @param context application context
-//     * @param instance to update parent for
-//     */
-//    private static void updateParentAlarm(Context context, AlarmInstance instance) {
-//        ContentResolver cr = context.getContentResolver();
-//        Alarm alarm = Alarm.getAlarm(cr, instance.mAlarmId);
-//        if (alarm == null) {
-////            //Log.e("Parent has been deleted with instance: " + instance.toString());
-//            return;
-//        }
-//
-//        if (!alarm.daysOfWeek.isRepeating()) {
-//            if (alarm.deleteAfterUse) {
-//                //Log.i("Deleting parent alarm: " + alarm.id);
-//                Alarm.deleteAlarm(cr, alarm.id);
-//            } else {
-//                //Log.i("Disabling parent alarm: " + alarm.id);
-//                alarm.enabled = false;
-//                Alarm.updateAlarm(cr, alarm);
-//            }
-//        } else {
-//            // This is a optimization for really old alarm instances. This prevent us
-//            // from scheduling and dismissing alarms up to current time.
-//            Calendar currentTime = Calendar.getInstance();
-//            Calendar alarmTime = instance.getAlarmTime();
-//            if (currentTime.after(alarmTime)) {
-//                alarmTime = currentTime;
-//            }
-//            AlarmInstance nextRepeatedInstance = alarm.createInstanceAfter(alarmTime);
-//            //Log.i("Creating new instance for repeating alarm " + alarm.id + " at "  +
-////                    AlarmUtils.getFormattedTime(context, nextRepeatedInstance.getAlarmTime()));
-//            AlarmInstance.addInstance(cr, nextRepeatedInstance);
-//            registerInstance(context, nextRepeatedInstance, true);
-//        }
-//    }
-//
-//    /**
-//     * Utility method to create a proper change state intent.
-//     *
-//     * @param context application context
-//     * @param tag used to make intent differ from other state change intents.
-//     * @param instance to change state to
-//     * @param state to change to.
-//     * @return intent that can be used to change an alarm instance state
-//     */
-//    public static Intent createStateChangeIntent(Context context, String tag,
-//            AlarmInstance instance, Integer state) {
-//        Intent intent = AlarmInstance.createIntent(context, AlarmStateManager.class, instance.mId);
-//        intent.setAction(CHANGE_STATE_ACTION);
-//        intent.addCategory(tag);
-//        intent.putExtra(ALARM_GLOBAL_ID_EXTRA, getGlobalIntentId(context));
-//        if (state != null) {
-//            intent.putExtra(ALARM_STATE_EXTRA, state.intValue());
-//        }
-//        return intent;
-//    }
-//
-//    /**
-//     * Schedule alarm instance state changes with {@link AlarmManager}.
-//     *
-//     * @param context application context
-//     * @param time to trigger state change
-//     * @param instance to change state to
-//     * @param newState to change to
-//     */
-//    private static void scheduleInstanceStateChange(Context context, Calendar time,
-//            AlarmInstance instance, int newState) {
-//        long timeInMillis = time.getTimeInMillis();
-////		Log.v("Scheduling state change " + newState + " to instance " + instance.mId +
-////                " at " + AlarmUtils.getFormattedTime(context, time) + " (" + timeInMillis + ")");
-//        Intent stateChangeIntent = createStateChangeIntent(context, ALARM_MANAGER_TAG, instance,
-//                newState);
-//        PendingIntent pendingIntent = PendingIntent.getBroadcast(context, instance.hashCode(),
-//                stateChangeIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-//
-//        AlarmManager am = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-//        if (Utils.isKitKatOrLater()) {
-//            am.setExact(AlarmManager.RTC_WAKEUP, timeInMillis, pendingIntent);
-//        } else {
-//            am.set(AlarmManager.RTC_WAKEUP, timeInMillis, pendingIntent);
-//        }
-//    }
-//
-//    /**
-//     * Cancel all {@link AlarmManager} timers for instance.
-//     *
-//     * @param context application context
-//     * @param instance to disable all {@link AlarmManager} timers
-//     */
-//    private static void cancelScheduledInstance(Context context, AlarmInstance instance) {
-//        //Log.v("Canceling instance " + instance.mId + " timers");
-//
-//        // Create a PendingIntent that will match any one set for this instance
-//        PendingIntent pendingIntent = PendingIntent.getBroadcast(context, instance.hashCode(),
-//                createStateChangeIntent(context, ALARM_MANAGER_TAG, instance, null),
-//                PendingIntent.FLAG_UPDATE_CURRENT);
-//
-//        AlarmManager am = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-//        am.cancel(pendingIntent);
-//    }
-//
-//
-//    /**
-//     * This will set the alarm instance to the SILENT_STATE and update
-//     * the application notifications and schedule any state changes that need
-//     * to occur in the future.
-//     *
-//     * @param context application context
-//     * @param instance to set state to
-//     */
-//    public static void setSilentState(Context context, AlarmInstance instance) {
-//        //Log.v("Setting silent state to instance " + instance.mId);
-//
-//        // Update alarm in db
-//        ContentResolver contentResolver = context.getContentResolver();
-//        instance.mAlarmState = AlarmInstance.SILENT_STATE;
-//        AlarmInstance.updateInstance(contentResolver, instance);
-//
-//        // Setup instance notification and scheduling timers
-//        AlarmNotifications.clearNotification(context, instance);
-//        scheduleInstanceStateChange(context, instance.getLowNotificationTime(),
-//                instance, AlarmInstance.LOW_NOTIFICATION_STATE);
-//    }
-//
-//    /**
-//     * This will set the alarm instance to the LOW_NOTIFICATION_STATE and update
-//     * the application notifications and schedule any state changes that need
-//     * to occur in the future.
-//     *
-//     * @param context application context
-//     * @param instance to set state to
-//     */
-//    public static void setLowNotificationState(Context context, AlarmInstance instance) {
-//        //Log.v("Setting low notification state to instance " + instance.mId);
-//
-//        // Update alarm state in db
-//        ContentResolver contentResolver = context.getContentResolver();
-//        instance.mAlarmState = AlarmInstance.LOW_NOTIFICATION_STATE;
-//        AlarmInstance.updateInstance(contentResolver, instance);
-//
-//        // Setup instance notification and scheduling timers
-//        AlarmNotifications.showLowPriorityNotification(context, instance);
-//        scheduleInstanceStateChange(context, instance.getHighNotificationTime(),
-//                instance, AlarmInstance.HIGH_NOTIFICATION_STATE);
-//    }
-//
-//    /**
-//     * This will set the alarm instance to the HIDE_NOTIFICATION_STATE and update
-//     * the application notifications and schedule any state changes that need
-//     * to occur in the future.
-//     *
-//     * @param context application context
-//     * @param instance to set state to
-//     */
-//    public static void setHideNotificationState(Context context, AlarmInstance instance) {
-//        //Log.v("Setting hide notification state to instance " + instance.mId);
-//
-//        // Update alarm state in db
-//        ContentResolver contentResolver = context.getContentResolver();
-//        instance.mAlarmState = AlarmInstance.HIDE_NOTIFICATION_STATE;
-//        AlarmInstance.updateInstance(contentResolver, instance);
-//
-//        // Setup instance notification and scheduling timers
-//        AlarmNotifications.clearNotification(context, instance);
-//        scheduleInstanceStateChange(context, instance.getHighNotificationTime(),
-//                instance, AlarmInstance.HIGH_NOTIFICATION_STATE);
-//    }
-//
-//    /**
-//     * This will set the alarm instance to the HIGH_NOTIFICATION_STATE and update
-//     * the application notifications and schedule any state changes that need
-//     * to occur in the future.
-//     *
-//     * @param context application context
-//     * @param instance to set state to
-//     */
-//    public static void setHighNotificationState(Context context, AlarmInstance instance) {
-//        //Log.v("Setting high notification state to instance " + instance.mId);
-//
-//        // Update alarm state in db
-//        ContentResolver contentResolver = context.getContentResolver();
-//        instance.mAlarmState = AlarmInstance.HIGH_NOTIFICATION_STATE;
-//        AlarmInstance.updateInstance(contentResolver, instance);
-//
-//        // Setup instance notification and scheduling timers
-//        AlarmNotifications.showHighPriorityNotification(context, instance);
-//        scheduleInstanceStateChange(context, instance.getAlarmTime(),
-//                instance, AlarmInstance.FIRED_STATE);
-//    }
-//
-//    /**
-//     * This will set the alarm instance to the FIRED_STATE and update
-//     * the application notifications and schedule any state changes that need
-//     * to occur in the future.
-//     *
-//     * @param context application context
-//     * @param instance to set state to
-//     */
-//    public static void setFiredState(Context context, AlarmInstance instance) {
-//        //Log.v("Setting fire state to instance " + instance.mId);
-//
-//        // Update alarm state in db
-//        ContentResolver contentResolver = context.getContentResolver();
-//        instance.mAlarmState = AlarmInstance.FIRED_STATE;
-//        AlarmInstance.updateInstance(contentResolver, instance);
-//
-//        // Start the alarm and schedule timeout timer for it
-//        AlarmService.startAlarm(context, instance);
-//
-//        Calendar timeout = instance.getTimeout(context);
-//        if (timeout != null) {
-//            scheduleInstanceStateChange(context, timeout, instance, AlarmInstance.MISSED_STATE);
-//        }
-//
-//        // Instance not valid anymore, so find next alarm that will fire and notify system
-//        updateNextAlarm(context);
-//    }
-//
-//    /**
-//     * This will set the alarm instance to the MISSED_STATE and update
-//     * the application notifications and schedule any state changes that need
-//     * to occur in the future.
-//     *
-//     * @param context application context
-//     * @param instance to set state to
-//     */
-//    public static void setMissedState(Context context, AlarmInstance instance) {
-//        //Log.v("Setting missed state to instance " + instance.mId);
-//        // Stop alarm if this instance is firing it
-//        AlarmService.stopAlarm(context, instance);
-//
-//        // Check parent if it needs to reschedule, disable or delete itself
-//        if (instance.mAlarmId != null) {
-//            updateParentAlarm(context, instance);
-//        }
-//
-//        // Update alarm state
-//        ContentResolver contentResolver = context.getContentResolver();
-//        instance.mAlarmState = AlarmInstance.MISSED_STATE;
-//        AlarmInstance.updateInstance(contentResolver, instance);
-//
-//        // Setup instance notification and scheduling timers
-//        AlarmNotifications.showMissedNotification(context, instance);
-//        scheduleInstanceStateChange(context, instance.getMissedTimeToLive(),
-//                instance, AlarmInstance.DISMISSED_STATE);
-//
-//        // Instance is not valid anymore, so find next alarm that will fire and notify system
-//        updateNextAlarm(context);
-//
-//    }
-//
-//    /**
-//     * This will set the alarm instance to the SILENT_STATE and update
-//     * the application notifications and schedule any state changes that need
-//     * to occur in the future.
-//     *
-//     * @param context application context
-//     * @param instance to set state to
-//     */
-//    public static void setDismissState(Context context, AlarmInstance instance) {
-//        //Log.v("Setting dismissed state to instance " + instance.mId);
-//
-//        // Remove all other timers and notifications associated to it
-//        unregisterInstance(context, instance);
-//
-//        // Check parent if it needs to reschedule, disable or delete itself
-//        if (instance.mAlarmId != null) {
-//            updateParentAlarm(context, instance);
-//        }
-//
-//        // Delete instance as it is not needed anymore
-//        AlarmInstance.deleteInstance(context.getContentResolver(), instance.mId);
-//
-//        // Instance is not valid anymore, so find next alarm that will fire and notify system
-//        updateNextAlarm(context);
-//    }
-//
-//    /**
-//     * This will not change the state of instance, but remove it's notifications and
-//     * alarm timers.
-//     *
-//     * @param context application context
-//     * @param instance to unregister
-//     */
-//    public static void unregisterInstance(Context context, AlarmInstance instance) {
-//        // Stop alarm if this instance is firing it
-//        AlarmService.stopAlarm(context, instance);
-//        AlarmNotifications.clearNotification(context, instance);
-//        cancelScheduledInstance(context, instance);
-//    }
+////    /**
+////     * Used by dismissed and missed states, to update parent alarm. This will either
+////     * disable, delete or reschedule parent alarm.
+////     *
+////     * @param context application context
+////     * @param instance to update parent for
+////     */
+////    private static void updateParentAlarm(Context context, AlarmInstance instance) {
+////        ContentResolver cr = context.getContentResolver();
+////        Alarm alarm = Alarm.getAlarm(cr, instance.mAlarmId);
+////        if (alarm == null) {
+//////            //Log.e("Parent has been deleted with instance: " + instance.toString());
+////            return;
+////        }
+////
+////        if (!alarm.daysOfWeek.isRepeating()) {
+////            if (alarm.deleteAfterUse) {
+////                //Log.i("Deleting parent alarm: " + alarm.id);
+////                Alarm.deleteAlarm(cr, alarm.id);
+////            } else {
+////                //Log.i("Disabling parent alarm: " + alarm.id);
+////                alarm.enabled = false;
+////                Alarm.updateAlarm(cr, alarm);
+////            }
+////        } else {
+////            // This is a optimization for really old alarm instances. This prevent us
+////            // from scheduling and dismissing alarms up to current time.
+////            Calendar currentTime = Calendar.getInstance();
+////            Calendar alarmTime = instance.getAlarmTime();
+////            if (currentTime.after(alarmTime)) {
+////                alarmTime = currentTime;
+////            }
+////            AlarmInstance nextRepeatedInstance = alarm.createInstanceAfter(alarmTime);
+////            //Log.i("Creating new instance for repeating alarm " + alarm.id + " at "  +
+//////                    AlarmUtils.getFormattedTime(context, nextRepeatedInstance.getAlarmTime()));
+////            AlarmInstance.addInstance(cr, nextRepeatedInstance);
+////            registerInstance(context, nextRepeatedInstance, true);
+////        }
+////    }
+////
+////    /**
+////     * Utility method to create a proper change state intent.
+////     *
+////     * @param context application context
+////     * @param tag used to make intent differ from other state change intents.
+////     * @param instance to change state to
+////     * @param state to change to.
+////     * @return intent that can be used to change an alarm instance state
+////     */
+////    public static Intent createStateChangeIntent(Context context, String tag,
+////            AlarmInstance instance, Integer state) {
+////        Intent intent = AlarmInstance.createIntent(context, AlarmStateManager.class, instance.mId);
+////        intent.setAction(CHANGE_STATE_ACTION);
+////        intent.addCategory(tag);
+////        intent.putExtra(ALARM_GLOBAL_ID_EXTRA, getGlobalIntentId(context));
+////        if (state != null) {
+////            intent.putExtra(ALARM_STATE_EXTRA, state.intValue());
+////        }
+////        return intent;
+////    }
+////
+////    /**
+////     * Schedule alarm instance state changes with {@link AlarmManager}.
+////     *
+////     * @param context application context
+////     * @param time to trigger state change
+////     * @param instance to change state to
+////     * @param newState to change to
+////     */
+////    private static void scheduleInstanceStateChange(Context context, Calendar time,
+////            AlarmInstance instance, int newState) {
+////        long timeInMillis = time.getTimeInMillis();
+//////		Log.v("Scheduling state change " + newState + " to instance " + instance.mId +
+//////                " at " + AlarmUtils.getFormattedTime(context, time) + " (" + timeInMillis + ")");
+////        Intent stateChangeIntent = createStateChangeIntent(context, ALARM_MANAGER_TAG, instance,
+////                newState);
+////        PendingIntent pendingIntent = PendingIntent.getBroadcast(context, instance.hashCode(),
+////                stateChangeIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+////
+////        AlarmManager am = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+////        if (Utils.isKitKatOrLater()) {
+////            am.setExact(AlarmManager.RTC_WAKEUP, timeInMillis, pendingIntent);
+////        } else {
+////            am.set(AlarmManager.RTC_WAKEUP, timeInMillis, pendingIntent);
+////        }
+////    }
+////
+////    /**
+////     * Cancel all {@link AlarmManager} timers for instance.
+////     *
+////     * @param context application context
+////     * @param instance to disable all {@link AlarmManager} timers
+////     */
+////    private static void cancelScheduledInstance(Context context, AlarmInstance instance) {
+////        //Log.v("Canceling instance " + instance.mId + " timers");
+////
+////        // Create a PendingIntent that will match any one set for this instance
+////        PendingIntent pendingIntent = PendingIntent.getBroadcast(context, instance.hashCode(),
+////                createStateChangeIntent(context, ALARM_MANAGER_TAG, instance, null),
+////                PendingIntent.FLAG_UPDATE_CURRENT);
+////
+////        AlarmManager am = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+////        am.cancel(pendingIntent);
+////    }
+////
+////
+////    /**
+////     * This will set the alarm instance to the SILENT_STATE and update
+////     * the application notifications and schedule any state changes that need
+////     * to occur in the future.
+////     *
+////     * @param context application context
+////     * @param instance to set state to
+////     */
+////    public static void setSilentState(Context context, AlarmInstance instance) {
+////        //Log.v("Setting silent state to instance " + instance.mId);
+////
+////        // Update alarm in db
+////        ContentResolver contentResolver = context.getContentResolver();
+////        instance.mAlarmState = AlarmInstance.SILENT_STATE;
+////        AlarmInstance.updateInstance(contentResolver, instance);
+////
+////        // Setup instance notification and scheduling timers
+////        AlarmNotifications.clearNotification(context, instance);
+////        scheduleInstanceStateChange(context, instance.getLowNotificationTime(),
+////                instance, AlarmInstance.LOW_NOTIFICATION_STATE);
+////    }
+////
+////    /**
+////     * This will set the alarm instance to the LOW_NOTIFICATION_STATE and update
+////     * the application notifications and schedule any state changes that need
+////     * to occur in the future.
+////     *
+////     * @param context application context
+////     * @param instance to set state to
+////     */
+////    public static void setLowNotificationState(Context context, AlarmInstance instance) {
+////        //Log.v("Setting low notification state to instance " + instance.mId);
+////
+////        // Update alarm state in db
+////        ContentResolver contentResolver = context.getContentResolver();
+////        instance.mAlarmState = AlarmInstance.LOW_NOTIFICATION_STATE;
+////        AlarmInstance.updateInstance(contentResolver, instance);
+////
+////        // Setup instance notification and scheduling timers
+////        AlarmNotifications.showLowPriorityNotification(context, instance);
+////        scheduleInstanceStateChange(context, instance.getHighNotificationTime(),
+////                instance, AlarmInstance.HIGH_NOTIFICATION_STATE);
+////    }
+////
+////    /**
+////     * This will set the alarm instance to the HIDE_NOTIFICATION_STATE and update
+////     * the application notifications and schedule any state changes that need
+////     * to occur in the future.
+////     *
+////     * @param context application context
+////     * @param instance to set state to
+////     */
+////    public static void setHideNotificationState(Context context, AlarmInstance instance) {
+////        //Log.v("Setting hide notification state to instance " + instance.mId);
+////
+////        // Update alarm state in db
+////        ContentResolver contentResolver = context.getContentResolver();
+////        instance.mAlarmState = AlarmInstance.HIDE_NOTIFICATION_STATE;
+////        AlarmInstance.updateInstance(contentResolver, instance);
+////
+////        // Setup instance notification and scheduling timers
+////        AlarmNotifications.clearNotification(context, instance);
+////        scheduleInstanceStateChange(context, instance.getHighNotificationTime(),
+////                instance, AlarmInstance.HIGH_NOTIFICATION_STATE);
+////    }
+////
+////    /**
+////     * This will set the alarm instance to the HIGH_NOTIFICATION_STATE and update
+////     * the application notifications and schedule any state changes that need
+////     * to occur in the future.
+////     *
+////     * @param context application context
+////     * @param instance to set state to
+////     */
+////    public static void setHighNotificationState(Context context, AlarmInstance instance) {
+////        //Log.v("Setting high notification state to instance " + instance.mId);
+////
+////        // Update alarm state in db
+////        ContentResolver contentResolver = context.getContentResolver();
+////        instance.mAlarmState = AlarmInstance.HIGH_NOTIFICATION_STATE;
+////        AlarmInstance.updateInstance(contentResolver, instance);
+////
+////        // Setup instance notification and scheduling timers
+////        AlarmNotifications.showHighPriorityNotification(context, instance);
+////        scheduleInstanceStateChange(context, instance.getAlarmTime(),
+////                instance, AlarmInstance.FIRED_STATE);
+////    }
+////
+////    /**
+////     * This will set the alarm instance to the FIRED_STATE and update
+////     * the application notifications and schedule any state changes that need
+////     * to occur in the future.
+////     *
+////     * @param context application context
+////     * @param instance to set state to
+////     */
+////    public static void setFiredState(Context context, AlarmInstance instance) {
+////        //Log.v("Setting fire state to instance " + instance.mId);
+////
+////        // Update alarm state in db
+////        ContentResolver contentResolver = context.getContentResolver();
+////        instance.mAlarmState = AlarmInstance.FIRED_STATE;
+////        AlarmInstance.updateInstance(contentResolver, instance);
+////
+////        // Start the alarm and schedule timeout timer for it
+////        AlarmService.startAlarm(context, instance);
+////
+////        Calendar timeout = instance.getTimeout(context);
+////        if (timeout != null) {
+////            scheduleInstanceStateChange(context, timeout, instance, AlarmInstance.MISSED_STATE);
+////        }
+////
+////        // Instance not valid anymore, so find next alarm that will fire and notify system
+////        updateNextAlarm(context);
+////    }
+////
+////    /**
+////     * This will set the alarm instance to the MISSED_STATE and update
+////     * the application notifications and schedule any state changes that need
+////     * to occur in the future.
+////     *
+////     * @param context application context
+////     * @param instance to set state to
+////     */
+////    public static void setMissedState(Context context, AlarmInstance instance) {
+////        //Log.v("Setting missed state to instance " + instance.mId);
+////        // Stop alarm if this instance is firing it
+////        AlarmService.stopAlarm(context, instance);
+////
+////        // Check parent if it needs to reschedule, disable or delete itself
+////        if (instance.mAlarmId != null) {
+////            updateParentAlarm(context, instance);
+////        }
+////
+////        // Update alarm state
+////        ContentResolver contentResolver = context.getContentResolver();
+////        instance.mAlarmState = AlarmInstance.MISSED_STATE;
+////        AlarmInstance.updateInstance(contentResolver, instance);
+////
+////        // Setup instance notification and scheduling timers
+////        AlarmNotifications.showMissedNotification(context, instance);
+////        scheduleInstanceStateChange(context, instance.getMissedTimeToLive(),
+////                instance, AlarmInstance.DISMISSED_STATE);
+////
+////        // Instance is not valid anymore, so find next alarm that will fire and notify system
+////        updateNextAlarm(context);
+////
+////    }
+////
+////    /**
+////     * This will set the alarm instance to the SILENT_STATE and update
+////     * the application notifications and schedule any state changes that need
+////     * to occur in the future.
+////     *
+////     * @param context application context
+////     * @param instance to set state to
+////     */
+////    public static void setDismissState(Context context, AlarmInstance instance) {
+////        //Log.v("Setting dismissed state to instance " + instance.mId);
+////
+////        // Remove all other timers and notifications associated to it
+////        unregisterInstance(context, instance);
+////
+////        // Check parent if it needs to reschedule, disable or delete itself
+////        if (instance.mAlarmId != null) {
+////            updateParentAlarm(context, instance);
+////        }
+////
+////        // Delete instance as it is not needed anymore
+////        AlarmInstance.deleteInstance(context.getContentResolver(), instance.mId);
+////
+////        // Instance is not valid anymore, so find next alarm that will fire and notify system
+////        updateNextAlarm(context);
+////    }
+////
+////    /**
+////     * This will not change the state of instance, but remove it's notifications and
+////     * alarm timers.
+////     *
+////     * @param context application context
+////     * @param instance to unregister
+////     */
+////    public static void unregisterInstance(Context context, AlarmInstance instance) {
+////        // Stop alarm if this instance is firing it
+////        AlarmService.stopAlarm(context, instance);
+////        AlarmNotifications.clearNotification(context, instance);
+////        cancelScheduledInstance(context, instance);
+////    }
 //
 //    /**
 //     * This registers the AlarmInstance to the state manager. This will look at the instance

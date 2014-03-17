@@ -15,11 +15,18 @@
  */
 package com.example.reminder.alarm;
 
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashSet;
 import java.util.Locale;
 
+import com.example.reminder.Constants;
+import com.example.reminder.ReminderFragment.AlarmItemAdapter.ItemHolder;
+
+import android.app.PendingIntent;
 import android.app.TimePickerDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -32,18 +39,12 @@ import android.widget.Toast;
  */
 public class AlarmUtils {
     public static final String FRAG_TAG_TIME_PICKER = "time_dialog";
-
+    
     public static String getFormattedTime(Context context, Calendar time) {
         String skeleton = DateFormat.is24HourFormat(context) ? "EHm" : "Ehma";
         String pattern = DateFormat.getBestDateTimePattern(Locale.getDefault(), skeleton);
         return (String) DateFormat.format(pattern, time);
     }
-
-//    public static String getAlarmText(Context context, AlarmInstance instance) {
-//        String alarmTimeStr = getFormattedTime(context, instance.getAlarmTime());
-//        return !instance.mLabel.isEmpty() ? alarmTimeStr + " - " + instance.mLabel
-//                : alarmTimeStr;
-//    }
 
     public static void showTimeEditDialog(FragmentManager manager, final Alarm alarm,
             TimePickerDialog.OnTimeSetListener listener, boolean is24HourMode) {
@@ -72,54 +73,41 @@ public class AlarmUtils {
         ft.commit();
         
         df.show(manager, "timePicker");
-
-
-//        if (dialog != null && !dialog.isAdded()) {
-//            dialog.show(manager, FRAG_TAG_TIME_PICKER);
-//        }
     }
     
-
-
+    private static Calendar getAlarmTime(Alarm alarm) {
+       
+    	Calendar alarmCalendar = Calendar.getInstance();
+    	int addDays = alarm.daysOfWeek.calculateDaysToNextAlarm(alarmCalendar);
+    	if (addDays>0){
+    		alarmCalendar.add(Calendar.DAY_OF_WEEK, addDays);
+    	}
+    	
+    	alarmCalendar.set(Calendar.HOUR_OF_DAY, alarm.hour);
+    	alarmCalendar.set(Calendar.MINUTE, alarm.minutes);
+    	alarmCalendar.set(Calendar.MILLISECOND, 0);
+    	
+        return alarmCalendar;
+    }
+    
     /**
-     * format "Alarm set for 2 days 7 hours and 53 minutes from
-     * now"
+     * Get the closest calendar for AlarmManager to schedule
+     * @param reminders
+     * @return
      */
-//    private static String formatToast(Context context, long timeInMillis) {
-//        long delta = timeInMillis - System.currentTimeMillis();
-//        long hours = delta / (1000 * 60 * 60);
-//        long minutes = delta / (1000 * 60) % 60;
-//        long days = hours / 24;
-//        hours = hours % 24;
-//
-//        String daySeq = (days == 0) ? "" :
-//                (days == 1) ? context.getString(R.string.day) :
-//                        context.getString(R.string.days, Long.toString(days));
-//
-//        String minSeq = (minutes == 0) ? "" :
-//                (minutes == 1) ? context.getString(R.string.minute) :
-//                        context.getString(R.string.minutes, Long.toString(minutes));
-//
-//        String hourSeq = (hours == 0) ? "" :
-//                (hours == 1) ? context.getString(R.string.hour) :
-//                        context.getString(R.string.hours, Long.toString(hours));
-//
-//        boolean dispDays = days > 0;
-//        boolean dispHour = hours > 0;
-//        boolean dispMinute = minutes > 0;
-//
-//        int index = (dispDays ? 1 : 0) |
-//                (dispHour ? 2 : 0) |
-//                (dispMinute ? 4 : 0);
-//
-//        String[] formats = context.getResources().getStringArray(R.array.alarm_set);
-//        return String.format(formats[index], daySeq, hourSeq, minSeq);
-//    }
-//
-//    public static void popAlarmSetToast(Context context, long timeInMillis) {
-//        String toastText = formatToast(context, timeInMillis);
-//        Toast toast = Toast.makeText(context, toastText, Toast.LENGTH_LONG);
-//        ToastMaster.setToast(toast);
-//        toast.show();
-//    }
+    
+	public static Calendar getNextAlarm(ArrayList<Alarm> reminders){
+		Calendar bestCalendar = null;
+		for (Alarm alarm : reminders){
+    		if(alarm.enabled){
+    			Calendar c = getAlarmTime(alarm);
+    			if (bestCalendar == null || 
+    					c.getTimeInMillis() < bestCalendar.getTimeInMillis()){ 
+    				bestCalendar = c;
+    			}
+    		}	
+    	}
+		return bestCalendar;
+	}
+
 }

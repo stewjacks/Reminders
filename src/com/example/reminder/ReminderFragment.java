@@ -179,7 +179,6 @@ public class ReminderFragment<mSelectedAlarm> extends Fragment implements
 
         //retrieve SharedPreferences Alarm list TODO: check if exists
         alarmPreferences = new AlarmSharedPreferencesAdapter(getActivity());
-        alarmPreferences.checkSharedPreferences();
         reminderList = alarmPreferences.reminders;
         
         if (reminderList.size()>0){

@@ -27,13 +27,14 @@ public class AlarmSharedPreferencesAdapter {
     public AlarmSharedPreferencesAdapter(Context context){
     	this.context = context;
     	this.reminders = new ArrayList<Alarm>();
+    	checkSharedPreferences();
     }
   
-	public void checkSharedPreferences(){
+	@SuppressWarnings("unchecked")
+	private void checkSharedPreferences(){
     	sp = PreferenceManager.getDefaultSharedPreferences(context);
-    	reminders = new ArrayList<Alarm>();
     	
-    	reminders = (ArrayList<Alarm>) ObjectSerializer.deserialize(context, Constants.ALARM_FILENAME);
+		this.reminders = (ArrayList<Alarm>) ObjectSerializer.deserialize(context, Constants.ALARM_FILENAME);
     }
     
     public boolean saveSharedPreferences(ArrayList<Alarm> reminders){

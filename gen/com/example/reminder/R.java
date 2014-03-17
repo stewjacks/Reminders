@@ -13,46 +13,46 @@ public final class R {
         public static final int fade_out=0x7f040001;
     }
     public static final class array {
-        public static final int shortDaysOfWeek=0x7f090000;
+        public static final int shortDaysOfWeek=0x7f0a0000;
     }
     public static final class attr {
     }
     public static final class color {
-        public static final int action_bar_button_text_color=0x7f070006;
-        public static final int alarm_selected_color=0x7f07001b;
-        public static final int alarm_timeline_color=0x7f07001c;
-        public static final int alarm_whiteish=0x7f070011;
-        public static final int ampm_off=0x7f070000;
-        public static final int ampm_on=0x7f070001;
-        public static final int ampm_text_color=0x7f070003;
-        public static final int black=0x7f070008;
+        public static final int action_bar_button_text_color=0x7f080006;
+        public static final int alarm_selected_color=0x7f08001b;
+        public static final int alarm_timeline_color=0x7f08001c;
+        public static final int alarm_whiteish=0x7f080011;
+        public static final int ampm_off=0x7f080000;
+        public static final int ampm_on=0x7f080001;
+        public static final int ampm_text_color=0x7f080003;
+        public static final int black=0x7f080008;
         /**  If this color is changed or no longer used as the primary background, ensure that blackish_trans is changed as well. 
          */
-        public static final int blackish=0x7f070009;
-        public static final int blackish_selected=0x7f07000a;
+        public static final int blackish=0x7f080009;
+        public static final int blackish_selected=0x7f08000a;
         /**  Transparent background for use in the footer. 80% opacity. The color must remain the same as "blackish" above. 
          */
-        public static final int blackish_trans=0x7f07000b;
-        public static final int clock_blue=0x7f070019;
-        public static final int clock_gray=0x7f070018;
-        public static final int clock_red=0x7f070016;
-        public static final int clock_white=0x7f070017;
-        public static final int dialog_gray=0x7f070007;
-        public static final int grey=0x7f07000e;
-        public static final int main_button_normal=0x7f070012;
-        public static final int main_button_red_normal=0x7f070014;
+        public static final int blackish_trans=0x7f08000b;
+        public static final int clock_blue=0x7f080019;
+        public static final int clock_gray=0x7f080018;
+        public static final int clock_red=0x7f080016;
+        public static final int clock_white=0x7f080017;
+        public static final int dialog_gray=0x7f080007;
+        public static final int grey=0x7f08000e;
+        public static final int main_button_normal=0x7f080012;
+        public static final int main_button_red_normal=0x7f080014;
         /**  same as clock_red 
          */
-        public static final int main_button_red_selected=0x7f070015;
-        public static final int main_button_selected=0x7f070013;
-        public static final int notification_bg=0x7f07001a;
-        public static final int red=0x7f07000d;
-        public static final int screen_saver_color=0x7f070004;
-        public static final int screen_saver_dim_color=0x7f070005;
-        public static final int time_text_color=0x7f070002;
-        public static final int transparent=0x7f07000f;
-        public static final int transparent_white=0x7f070010;
-        public static final int white=0x7f07000c;
+        public static final int main_button_red_selected=0x7f080015;
+        public static final int main_button_selected=0x7f080013;
+        public static final int notification_bg=0x7f08001a;
+        public static final int red=0x7f08000d;
+        public static final int screen_saver_color=0x7f080004;
+        public static final int screen_saver_dim_color=0x7f080005;
+        public static final int time_text_color=0x7f080002;
+        public static final int transparent=0x7f08000f;
+        public static final int transparent_white=0x7f080010;
+        public static final int white=0x7f08000c;
     }
     public static final class dimen {
         /**  Default screen margins, per the Android Design guidelines. 
@@ -61,11 +61,11 @@ public final class R {
          screen margins) for sw720dp devices (e.g. 10" tablets) in landscape here.
     
          */
-        public static final int activity_horizontal_margin=0x7f060003;
-        public static final int activity_vertical_margin=0x7f060004;
-        public static final int min_lock=0x7f060002;
-        public static final int min_swipe=0x7f060000;
-        public static final int min_vert=0x7f060001;
+        public static final int activity_horizontal_margin=0x7f070003;
+        public static final int activity_vertical_margin=0x7f070004;
+        public static final int min_lock=0x7f070002;
+        public static final int min_swipe=0x7f070000;
+        public static final int min_vert=0x7f070001;
     }
     public static final class drawable {
         public static final int add_alarm=0x7f020000;
@@ -87,31 +87,31 @@ public final class R {
         public static final int toggle_underline_normal=0x7f02000e;
     }
     public static final class id {
-        public static final int action_settings=0x7f0c0013;
-        public static final int alarm_add_alarm=0x7f0c0006;
-        public static final int alarms_empty_view=0x7f0c0003;
-        public static final int alarms_footer_view=0x7f0c0005;
-        public static final int alarms_list=0x7f0c0002;
-        public static final int cancelButton=0x7f0c000a;
-        public static final int fragment_container=0x7f0c0000;
-        public static final int hairline=0x7f0c0009;
-        public static final int labelBox=0x7f0c0008;
-        public static final int main=0x7f0c0001;
-        public static final int reminder_delete=0x7f0c0011;
-        public static final int reminder_label=0x7f0c0010;
-        public static final int reminder_relative1=0x7f0c000c;
-        public static final int reminder_relative2=0x7f0c000f;
-        public static final int reminder_switch=0x7f0c000d;
-        public static final int reminder_textclock=0x7f0c000e;
-        public static final int repeat_days=0x7f0c0012;
-        public static final int save_button=0x7f0c0007;
-        public static final int setButton=0x7f0c000b;
-        public static final int undo_frame=0x7f0c0004;
+        public static final int action_settings=0x7f0d0013;
+        public static final int alarm_add_alarm=0x7f0d0006;
+        public static final int alarms_empty_view=0x7f0d0003;
+        public static final int alarms_footer_view=0x7f0d0005;
+        public static final int alarms_list=0x7f0d0002;
+        public static final int cancelButton=0x7f0d000a;
+        public static final int fragment_container=0x7f0d0000;
+        public static final int hairline=0x7f0d0009;
+        public static final int labelBox=0x7f0d0008;
+        public static final int main=0x7f0d0001;
+        public static final int reminder_delete=0x7f0d0011;
+        public static final int reminder_label=0x7f0d0010;
+        public static final int reminder_relative1=0x7f0d000c;
+        public static final int reminder_relative2=0x7f0d000f;
+        public static final int reminder_switch=0x7f0d000d;
+        public static final int reminder_textclock=0x7f0d000e;
+        public static final int repeat_days=0x7f0d0012;
+        public static final int save_button=0x7f0d0007;
+        public static final int setButton=0x7f0d000b;
+        public static final int undo_frame=0x7f0d0004;
     }
     public static final class integer {
-        public static final int dim_animation_duration=0x7f050009;
-        public static final int dismiss_animation_duration=0x7f050006;
-        public static final int escape_animation_duration=0x7f050002;
+        public static final int dim_animation_duration=0x7f060009;
+        public static final int dismiss_animation_duration=0x7f060006;
+        public static final int escape_animation_duration=0x7f060002;
         /** 
     <integer name="activity_slide_left_duration">475</integer>
     <integer name="activity_slide_right_duration">525</integer>
@@ -126,15 +126,15 @@ public final class R {
     <integer name="fade_in_animation_duration">350</integer>
     
          */
-        public static final int fade_duration=0x7f050000;
-        public static final int hide_animation_duration=0x7f050008;
-        public static final int max_dismiss_velocity=0x7f050004;
-        public static final int max_escape_animation_duration=0x7f050003;
-        public static final int snap_animation_duration=0x7f050005;
+        public static final int fade_duration=0x7f060000;
+        public static final int hide_animation_duration=0x7f060008;
+        public static final int max_dismiss_velocity=0x7f060004;
+        public static final int max_escape_animation_duration=0x7f060003;
+        public static final int snap_animation_duration=0x7f060005;
         /**  Swipe constants 
          */
-        public static final int swipe_escape_velocity=0x7f050001;
-        public static final int swipe_scroll_slop=0x7f050007;
+        public static final int swipe_escape_velocity=0x7f060001;
+        public static final int swipe_scroll_slop=0x7f060007;
     }
     public static final class layout {
         public static final int activity_main=0x7f030000;
@@ -144,32 +144,35 @@ public final class R {
         public static final int reminder_list_item=0x7f030004;
     }
     public static final class menu {
-        public static final int main=0x7f0b0000;
+        public static final int main=0x7f0c0000;
+    }
+    public static final class raw {
+        public static final int bikebell=0x7f050000;
     }
     public static final class string {
-        public static final int action_settings=0x7f080001;
-        public static final int app_name=0x7f080000;
+        public static final int action_settings=0x7f090001;
+        public static final int app_name=0x7f090000;
         /**  Repeat options that appear under an alarm on main Alarm Clock
          screen to identify repetition schedule: concatenate days with
          this character, i.e. "Mon, Tue, Wed" 
          */
-        public static final int day_concat=0x7f080005;
+        public static final int day_concat=0x7f090005;
         /**  This is the default text label for new reminders
          */
-        public static final int default_label=0x7f080006;
+        public static final int default_label=0x7f090006;
         /**  Repeat options that appear under an alarm on main Alarm Clock
          screen to identify repetition schedule: special case for when
          the alarm is set to repeat every day 
          */
-        public static final int every_day=0x7f080003;
-        public static final int hello_world=0x7f080002;
+        public static final int every_day=0x7f090003;
+        public static final int hello_world=0x7f090002;
         /**  Repeat options that appear under an alarm on main Alarm Clock
          screen to identify repetition schedule: special case for when
          the alarm is set to never repeat 
          */
-        public static final int never=0x7f080004;
-        public static final int picker_cancel=0x7f080007;
-        public static final int picker_confirm=0x7f080008;
+        public static final int never=0x7f090004;
+        public static final int picker_cancel=0x7f090007;
+        public static final int picker_confirm=0x7f090008;
     }
     public static final class style {
         /** 
@@ -193,10 +196,10 @@ public final class R {
     
  API 14 theme customizations can go here. 
          */
-        public static final int AppBaseTheme=0x7f0a0000;
+        public static final int AppBaseTheme=0x7f0b0000;
         /**  Application theme. 
  All customizations that are NOT specific to a particular API-level can go here. 
          */
-        public static final int AppTheme=0x7f0a0001;
+        public static final int AppTheme=0x7f0b0001;
     }
 }
